@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS staging.players (
     second_name VARCHAR(30),
     status CHAR(1),
     team NUMERIC (2),
-    team_code NUMERIC (2),
+    team_code NUMERIC(2),
     region VARCHAR(3),
     opta_code CHAR(7),
     element_type NUMERIC(1),
