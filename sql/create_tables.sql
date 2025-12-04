@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS staging.chips (
     gameweek_id NUMERIC(2) REFERENCES staging.gameweeks(gameweek_id),
     chip_name VARCHAR(20),
     num_played NUMERIC(10)
+    PRIMARY KEY (gameweek_id, chip_name)
 );
 
 CREATE TABLE IF NOT EXISTS staging.positions (
