@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS staging.players (
     chance_of_playing_this_round NUMERIC(3),
     corners_and_indirect_freekicks_order NUMERIC(2),
     direct_freekicks_order NUMERIC(2),
-    penalties_order NUMERIC(2),
+    penalties_order NUMERIC(2)
 );
 
 CREATE TABLE IF NOT EXISTS staging.teams (
@@ -76,6 +76,12 @@ CREATE TABLE IF NOT EXISTS staging.gameweeks (
     most_vice_captained NUMERIC(4),
     top_player NUMERIC(4),
     transfers_made NUMERIC(4)
+);
+
+CREATE TABLE IF NOT EXISTS staging.chips (
+    gameweek_id NUMERIC(2) REFERENCES staging.gameweeks(gameweek_id),
+    chip_name VARCHAR(20),
+    num_played NUMERIC(10)
 );
 
 CREATE TABLE IF NOT EXISTS staging.positions (
