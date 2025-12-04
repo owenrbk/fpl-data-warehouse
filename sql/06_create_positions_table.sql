@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS staging.positions (
     name_short CHAR(3),
     squad_select NUMERIC(1),
     squad_min_play NUMERIC(1),
-    squad_max_play NUMERIC(1),
+    squad_max_play NUMERIC(1)
 );
