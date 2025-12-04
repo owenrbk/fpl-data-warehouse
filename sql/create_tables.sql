@@ -59,9 +59,7 @@ CREATE TABLE IF NOT EXISTS staging.teams (
     strength_attack_home NUMERIC(4),
     strength_attack_away NUMERIC(4),
     strength_defence_home NUMERIC(4),
-    strength_defence_away NUMERIC(4),
-    pulse_id NUMERIC(3),
-    code NUMERIC(3)
+    strength_defence_away NUMERIC(4)
 );
 
 CREATE TABLE IF NOT EXISTS staging.gameweeks (
@@ -69,7 +67,6 @@ CREATE TABLE IF NOT EXISTS staging.gameweeks (
     average_score NUMERIC(3),
     highest_score NUMERIC(3),
     ranked_count NUMERIC(10),
-    chip_plays TEXT,
     most_selected NUMERIC(4),
     most_transferred_in NUMERIC(4),
     most_captained NUMERIC(4),
