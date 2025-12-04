@@ -10,7 +10,7 @@ From there, the data is structured into relational tables that make it easy to q
 
 The project was initially developed in the cloud using Neon PostgreSQL, which allowed quick setup, browser-based access, and the ability to work around limitations on a work laptop. 
 Raw JSON data is first stored as-is, then parsed into tables such as players, teams, fixtures, and player history. 
-This workflow enables tracking player performance over time, analyzing team trends, and building analytics-ready views without touching the raw data each time.
+This workflow enables tracking player performance over time, analyzing manager trends, and building analytics-ready views without touching the raw data each time.
 
 ## Plans
 
