@@ -1,5 +1,5 @@
 -- 04_create_teams_table.sql
--- Extracts team information from raw_fpl JSON
+-- Parses team information
 
 CREATE TABLE IF NOT EXISTS staging.teams (
     team_id NUMERIC(3) PRIMARY KEY,
