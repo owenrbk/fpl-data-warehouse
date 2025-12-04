@@ -1,5 +1,5 @@
 -- 03_create_players_table.sql
--- Parses player information from raw_fpl JSON and creates a structured players table
+-- Parses data from raw FPL JSON and creates structured tables
 
 CREATE TABLE IF NOT EXISTS staging.players (
     player_id INT PRIMARY KEY,
@@ -46,4 +46,43 @@ CREATE TABLE IF NOT EXISTS staging.players (
     corners_and_indirect_freekicks_order NUMERIC(2),
     direct_freekicks_order NUMERIC(2),
     penalties_order NUMERIC(2),
+);
+
+CREATE TABLE IF NOT EXISTS staging.teams (
+    team_id NUMERIC(3) PRIMARY KEY,
+    team_name VARCHAR(50),
+    short_name CHAR(3),
+    position NUMERIC(2),
+    strength NUMERIC(4),
+    strength_overall_home NUMERIC(4),
+    strength_overall_away NUMERIC(4),
+    strength_attack_home NUMERIC(4),
+    strength_attack_away NUMERIC(4),
+    strength_defense_home NUMERIC(4),
+    strength_defense_away NUMERIC(4),
+    pulse_id NUMERIC(3),
+    code NUMERIC(3)
+);
+
+CREATE TABLE IF NOT EXISTS staging.gameweeks (
+    gameweek_id NUMERIC(2) PRIMARY KEY,
+    average_score NUMERIC(3),
+    highest_score NUMERIC(3),
+    ranked_count NUMERIC(10),
+    chip_plays TEXT,
+    most_selected NUMERIC(4),
+    most_transferred_in NUMERIC(4),
+    most_captained NUMERIC(4),
+    most_vice_captained NUMERIC(4),
+    top_player NUMERIC(4),
+    transfers_made NUMERIC(4)
+);
+
+CREATE TABLE IF NOT EXISTS staging.positions (
+    position_id NUMERIC(1) PRIMARY KEY,
+    name VARCHAR(15),
+    name_short CHAR(3),
+    squad_select NUMERIC(1),
+    squad_min_play NUMERIC(1),
+    squad_max_play NUMERIC(1)
 );
