@@ -1,5 +1,5 @@
--- 05_create_fixtures_table.sql
--- Parses fixture data from raw_fpl JSON
+-- 05_create_gameweeks_table.sql
+-- Parses gameweek data
 
 CREATE TABLE IF NOT EXISTS staging.gameweeks (
     gameweek_id NUMERIC(2) PRIMARY KEY,
