@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS staging.gameweeks (
     highest_score NUMERIC(3),
     ranked_count NUMERIC(10),
     chip_plays TEXT,
-    most_selected INT,
-    most_transferred_in INT,
-    most_captained INT,
-    most_vice_captained INT,
-    top_player INT,
-    transfers_made INT
+    most_selected NUMERIC(4),
+    most_transferred_in NUMERIC(4),
+    most_captained NUMERIC(4),
+    most_vice_captained NUMERIC(4),
+    top_player NUMERIC(4),
+    transfers_made NUMERIC(4)
 );
