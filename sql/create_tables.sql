@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS staging.teams (
     strength_overall_away NUMERIC(4),
     strength_attack_home NUMERIC(4),
     strength_attack_away NUMERIC(4),
-    strength_defense_home NUMERIC(4),
-    strength_defense_away NUMERIC(4),
+    strength_defence_home NUMERIC(4),
+    strength_defence_away NUMERIC(4),
     pulse_id NUMERIC(3),
     code NUMERIC(3)
 );
