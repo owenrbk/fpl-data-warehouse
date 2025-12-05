@@ -39,7 +39,7 @@ SELECT DISTINCT
     p.expected_goal_involvements,
     p.expected_goals_conceded,
     p.form
-FROM staging.players p
-LEFT JOIN staging.teams t
+FROM core.players p
+LEFT JOIN core.teams t
     ON p.team = t.team_id;
 
