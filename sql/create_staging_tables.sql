@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS core.gameweeks (
 CREATE TABLE IF NOT EXISTS core.chips (
     gameweek_id NUMERIC(2) REFERENCES core.gameweeks(gameweek_id),
     chip_name VARCHAR(20),
-    num_played NUMERIC(10)
+    num_played NUMERIC(10),
     PRIMARY KEY (gameweek_id, chip_name)
 );
 
