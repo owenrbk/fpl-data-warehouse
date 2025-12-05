@@ -4,13 +4,14 @@ SELECT DISTINCT
     CONCAT(p.first_name, ' ', p.last_name) AS full_name,
     t.team_name,
     t.team_short,
-    CASE p.element_type
+    CASE p.position
         WHEN 1 THEN 'GKP'
         WHEN 2 THEN 'DEF'
         WHEN 3 THEN 'MID'
         WHEN 4 THEN 'FWD'
     END AS position,
     p.now_cost/10 AS cost,
+    p.form,
     p.total_points,
     p.points_per_game,
     p.minutes,
@@ -33,8 +34,7 @@ SELECT DISTINCT
     p.expected_goals,
     p.expected_assists,
     p.expected_goal_involvements,
-    p.expected_goals_conceded,
-    p.form
+    p.expected_goals_conceded
 FROM core.players p
 LEFT JOIN core.teams t
     ON p.team = t.team_id;
