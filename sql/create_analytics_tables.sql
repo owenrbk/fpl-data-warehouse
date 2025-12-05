@@ -1,4 +1,4 @@
-CREATE TABLE warehouse.all_players AS
+CREATE TABLE analytics.all_players AS
 SELECT DISTINCT
     player_id,
     CONCAT(p.first_name, ' ', p.last_name) AS full_name,
