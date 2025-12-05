@@ -2,18 +2,14 @@ CREATE TABLE analytics.all_players AS
 SELECT DISTINCT
     player_id,
     CONCAT(p.first_name, ' ', p.last_name) AS full_name,
-
     t.team_name,
     t.team_short,
-
     CASE p.element_type
         WHEN 1 THEN 'GKP'
         WHEN 2 THEN 'DEF'
         WHEN 3 THEN 'MID'
         WHEN 4 THEN 'FWD'
     END AS position,
-
-    -- keep all the useful stat columns
     p.now_cost/10,
     p.total_points,
     p.points_per_game,
