@@ -1,5 +1,5 @@
--- 03_create_players_table.sql
--- Parses data from raw FPL JSON and creates structured tables
+-- create_staging_tables.sql
+-- Parses data from raw FPL JSON and creates unstructured tables
 
 CREATE TABLE IF NOT EXISTS staging.players (
     player_id INT PRIMARY KEY,
