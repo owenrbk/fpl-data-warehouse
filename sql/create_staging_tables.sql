@@ -4,14 +4,12 @@ x-- create_staging_tables.sql
 CREATE TABLE IF NOT EXISTS staging.players (
     player_id INT PRIMARY KEY,
     first_name VARCHAR(30),
-    second_name VARCHAR(30),
+    last_name VARCHAR(30),
     status CHAR(1),
-    team NUMERIC (2),
     team_code NUMERIC(2),
-    region VARCHAR(3),
     opta_code CHAR(7),
     element_type NUMERIC(1),
-    now_cost NUMERIC(3),
+    now_cost NUMERIC(3,1),
     total_points NUMERIC(3),
     points_per_game NUMERIC(3,2),
     minutes NUMERIC(4),
@@ -34,7 +32,7 @@ CREATE TABLE IF NOT EXISTS staging.players (
     clearances_blocks_interceptions NUMERIC(4),
     recoveries NUMERIC(4),
     tackles NUMERIC(4),
-    dc NUMERIC(4),
+    defensive_contributions NUMERIC(4),
     starts NUMERIC(2),
     expected_goals NUMERIC(5,2),
     expected_assists NUMERIC(5,2),
@@ -82,11 +80,3 @@ CREATE TABLE IF NOT EXISTS staging.chips (
     PRIMARY KEY (gameweek_id, chip_name)
 );
 
-CREATE TABLE IF NOT EXISTS staging.positions (
-    position_id NUMERIC(1) PRIMARY KEY,
-    name VARCHAR(15),
-    name_short CHAR(3),
-    squad_select NUMERIC(1),
-    squad_min_play NUMERIC(1),
-    squad_max_play NUMERIC(1)
-);
