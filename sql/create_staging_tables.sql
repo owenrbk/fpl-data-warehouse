@@ -1,7 +1,7 @@
-x-- create_staging_tables.sql
+x-- create_core_tables.sql
 -- Parses data from raw FPL JSON and creates unstructured tables
 
-CREATE TABLE IF NOT EXISTS staging.players (
+CREATE TABLE IF NOT EXISTS core.players (
     player_id INT PRIMARY KEY,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS staging.players (
     penalties_order NUMERIC(2)
 );
 
-CREATE TABLE IF NOT EXISTS staging.teams (
+CREATE TABLE IF NOT EXISTS core.teams (
     team_id NUMERIC(3) PRIMARY KEY,
     team_name VARCHAR(50),
     short_name CHAR(3),
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS staging.teams (
     strength_defence_away NUMERIC(4)
 );
 
-CREATE TABLE IF NOT EXISTS staging.gameweeks (
+CREATE TABLE IF NOT EXISTS core.gameweeks (
     gameweek_id NUMERIC(2) PRIMARY KEY,
     average_score NUMERIC(3),
     highest_score NUMERIC(3),
@@ -73,8 +73,8 @@ CREATE TABLE IF NOT EXISTS staging.gameweeks (
     transfers_made NUMERIC(10)
 );
 
-CREATE TABLE IF NOT EXISTS staging.chips (
-    gameweek_id NUMERIC(2) REFERENCES staging.gameweeks(gameweek_id),
+CREATE TABLE IF NOT EXISTS core.chips (
+    gameweek_id NUMERIC(2) REFERENCES core.gameweeks(gameweek_id),
     chip_name VARCHAR(20),
     num_played NUMERIC(10)
     PRIMARY KEY (gameweek_id, chip_name)
