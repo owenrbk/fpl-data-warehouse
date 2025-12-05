@@ -1,4 +1,4 @@
-x-- create_core_tables.sql
+-- create_core_tables.sql
 -- Parses data from raw FPL JSON and creates unstructured tables
 
 CREATE TABLE IF NOT EXISTS core.players (
