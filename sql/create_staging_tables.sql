@@ -1,4 +1,4 @@
--- create_staging_tables.sql
+x-- create_staging_tables.sql
 -- Parses data from raw FPL JSON and creates unstructured tables
 
 CREATE TABLE IF NOT EXISTS staging.players (
@@ -31,15 +31,15 @@ CREATE TABLE IF NOT EXISTS staging.players (
     creativity NUMERIC(4,1),
     threat NUMERIC(4,1),
     ict_index NUMERIC(4,1),
-    cbi NUMERIC(4),
+    clearances_blocks_interceptions NUMERIC(4),
     recoveries NUMERIC(4),
     tackles NUMERIC(4),
     dc NUMERIC(4),
     starts NUMERIC(2),
-    xg NUMERIC(5,2),
-    xa NUMERIC(5,2),
-    xgi NUMERIC(5,2),
-    xgc NUMERIC(5,2),
+    expected_goals NUMERIC(5,2),
+    expected_assists NUMERIC(5,2),
+    expected_goal_involvements NUMERIC(5,2),
+    expected_goals_conceded NUMERIC(5,2),
     form NUMERIC(3,1),
     chance_of_playing_next_round NUMERIC(3),
     chance_of_playing_this_round NUMERIC(3),
