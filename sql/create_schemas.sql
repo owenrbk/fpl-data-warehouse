@@ -1,4 +1,4 @@
--- 00_create_schemas.sql
+-- create_schemas.sql
 -- Creates separate schemas for different stages of the data pipeline
 
 CREATE SCHEMA IF NOT EXISTS raw;
