@@ -10,7 +10,7 @@ SELECT DISTINCT
         WHEN 3 THEN 'MID'
         WHEN 4 THEN 'FWD'
     END AS position,
-    p.now_cost/10,
+    p.now_cost/10 AS cost,
     p.total_points,
     p.points_per_game,
     p.minutes,
