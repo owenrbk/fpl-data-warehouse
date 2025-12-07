@@ -3,7 +3,6 @@ import json
 import psycopg2
 import requests
 import logging
-from datetime import datetime
 from dotenv import load_dotenv
 
 # Load environment variables from .env
@@ -178,9 +177,9 @@ def update_tables(data):
     
         conn.commit()
         logging.info("Update complete!")
-     except Exception:
+    except Exception:
         logging.exception("Database update failed")  # logs full traceback automatically
-     finally:
+    finally:
         if 'cur' in locals():
             cur.close()
         if 'conn' in locals():
