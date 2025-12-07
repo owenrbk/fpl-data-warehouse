@@ -52,10 +52,10 @@ SELECT
     p_most_vice_captained.full_name AS "Most Vice Captained",
     p_top_player.full_name AS "Top Player",
     g.transfers_made AS "Transfers Made",
-    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Free Hit'),0) AS "Num of Free Hit",
-    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Bench Boost'),0) AS "Num of Bench Boost",
-    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Triple Captain'),0) AS "Num of Triple Captain",
-    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Wildcard'),0) AS "Num of Wildcard"
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='freehit'),0) AS "Num of Free Hit",
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='bboost'),0) AS "Num of Bench Boost",
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='3xc'),0) AS "Num of Triple Captain",
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='wildcard'),0) AS "Num of Wildcard"
 FROM core.gameweeks g
 LEFT JOIN analytics.all_players p_most_selected
     ON g.most_selected = p_most_selected.player_id
