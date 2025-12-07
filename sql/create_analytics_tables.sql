@@ -42,7 +42,7 @@ LEFT JOIN core.teams t
 
 CREATE TABLE analytics.gameweeks AS
 SELECT
-    g.gameweek AS Gameweek,
+    g.gameweek_id AS Gameweek,
     g.average_score AS "Average Score",
     g.highest_score AS "Highest Score",
     g.ranked_count AS "Total # of Managers",
