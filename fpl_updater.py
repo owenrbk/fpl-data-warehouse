@@ -36,6 +36,12 @@ def update_tables(data):
     try:
         conn = connect_db()
         cur = conn.cursor()
+
+        cur.execute("TRUNCATE core.players RESTART IDENTITY CASCADE;")
+        cur.execute("TRUNCATE core.teams RESTART IDENTITY CASCADE;")
+        cur.execute("TRUNCATE core.gameweeks RESTART IDENTITY CASCADE;")
+        cur.execute("TRUNCATE core.chips RESTART IDENTITY CASCADE;")
+        logging.info("Cleared existing tables...")
         
         logging.info("Updating players...")
         for player in data['elements']: 
