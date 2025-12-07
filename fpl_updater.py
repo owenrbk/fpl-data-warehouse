@@ -2,6 +2,7 @@ import os
 import json
 import psycopg2
 import requests
+import logging
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -163,7 +164,11 @@ def update_players(data):
             """, (gameweek_id, chip['chip_name'], chip['num_played']))
 
 
-conn.commit()
-cur.close()
-conn.close()
-print("Update complete!")
+    conn.commit()
+    cur.close()
+    conn.close()
+    print("Update complete!")
+
+if __name__ == "__main__":
+    data = get_fpl_data()
+    update_players(data)
