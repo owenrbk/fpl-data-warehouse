@@ -36,6 +36,8 @@ def connect_db():
 def update_players(data):
     conn = connect_db()
     cur = conn.cursor()
+    
+    logging.info("Updating players...")
     for player in data['elements']: 
         cur.execute("""
             INSERT INTO core.players (
@@ -100,6 +102,9 @@ def update_players(data):
                 direct_freekicks_order = EXCLUDED.direct_freekicks_order,
                 penalties_order = EXCLUDED.penalties_order;
         """, player)
+        
+    logging.info("Player updates finished...")
+    logging.info("Updating gameweeks...")
     
     for gameweek in data['events']:  # 'gameweeks' array contains all 38 gameweeks
         cur.execute("""
@@ -122,6 +127,9 @@ def update_players(data):
                 top_player = EXCLUDED.top_player,
                 transfers_made = EXCLUDED.transfers_made;
         """, gameweek)
+        
+    logging.info("Gameweek updates finished...")
+    logging.info("Updating teams...")
     
     for team in data['teams']:  # 'teams' array contains all 20 teams
         cur.execute("""
@@ -148,6 +156,9 @@ def update_players(data):
                 pulse_id = EXCLUDED.pulse_id,
                 code = EXCLUDED.code;
         """, team)
+
+    logging.info("Team updates finished...")
+    logging.info("Updating chips...")
     
     for gameweek in data['events']:
         gameweek_id = gameweek['id']
@@ -167,7 +178,7 @@ def update_players(data):
     conn.commit()
     cur.close()
     conn.close()
-    print("Update complete!")
+    logging.info("Update complete!")
 
 if __name__ == "__main__":
     data = get_fpl_data()
