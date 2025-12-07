@@ -70,7 +70,7 @@ LEFT JOIN analytics.all_players p_top_player
 LEFT JOIN core.chips c
     ON g.gameweek_id = c.gameweek_id
 GROUP BY
-    g.gameweek,
+    g.gameweek_id,
     g.average_score,
     g.highest_score,
     g.ranked_count,
@@ -79,6 +79,4 @@ GROUP BY
     p_most_transferred_in.full_name,
     p_most_captained.full_name,
     p_most_vice_captained.full_name,
-    p_top_player.full_name
-
-
+    p_top_player.full_name;
