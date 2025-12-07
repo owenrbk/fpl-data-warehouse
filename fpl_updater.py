@@ -112,7 +112,7 @@ def update_tables(data):
                     gameweek_id, average_score, highest_score, ranked_count, most_selected, most_transferred_in,
                     most_captained, most_vice_captained, top_player, transfers_made
                 ) VALUES (
-                    %(id)s, %(average_entry_score)s, %(highest_scoring_entry)s, %(ranked_count)s, %(most_selected)s, %(most_transferred_in)s, %(most_captained)s,
+                    %(id)s, %(average_entry_score)s, %(highest_score)s, %(ranked_count)s, %(most_selected)s, %(most_transferred_in)s, %(most_captained)s,
                     %(most_vice_captained)s, %(top_element)s, %(transfers_made)s
                 )
                 ON CONFLICT (gameweek_id) DO UPDATE
