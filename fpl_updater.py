@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-
+# Log processes
 logging.basicConfig(
     filename='/home/owen/fpl_updater/logs/updater.log',
     level=logging.INFO,
