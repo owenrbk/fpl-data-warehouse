@@ -52,10 +52,10 @@ SELECT
     p_most_vice_captained.full_name AS "Most Vice Captained",
     p_top_player.full_name AS "Top Player",
     g.transfers_made AS "Transfers Made",
-    COALESCE(chips_chip.sum_played[1],0) AS "Num of Free Hit",
-    COALESCE(chips_chip.sum_played[2],0) AS "Num of Bench Boost",
-    COALESCE(chips_chip.sum_played[3],0) AS "Num of Triple Captain",
-    COALESCE(chips_chip.sum_played[4],0) AS "Num of Wildcard"
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Free Hit'),0) AS "Num of Free Hit",
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Bench Boost'),0) AS "Num of Bench Boost",
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Triple Captain'),0) AS "Num of Triple Captain",
+    COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='Wildcard'),0) AS "Num of Wildcard"
 FROM core.gameweeks g
 LEFT JOIN analytics.all_players p_most_selected
     ON g.most_selected = p_most_selected.player_id
@@ -67,13 +67,18 @@ LEFT JOIN analytics.all_players p_most_vice_captained
     ON g.most_vice_captained = p_most_vice_captained.player_id
 LEFT JOIN analytics.all_players p_top_player
     ON g.top_player = p_top_player.player_id
-LEFT JOIN (
-    SELECT
-        gameweek_id,
-        jsonb_agg(num_played ORDER BY chip_name) AS sum_played
-    FROM core.chips
-    GROUP BY gameweek_id
-) chips_chip
-ON g.gameweek_id = chips_chip.gameweek_id;
+LEFT JOIN core.chips c
+    ON g.gameweek_id = c.gameweek_id
+GROUP BY
+    g.gameweek,
+    g.average_score,
+    g.highest_score,
+    g.ranked_count,
+    g.transfers_made,
+    p_most_selected.full_name,
+    p_most_transferred_in.full_name,
+    p_most_captained.full_name,
+    p_most_vice_captained.full_name,
+    p_top_player.full_name
 
 
