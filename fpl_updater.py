@@ -63,7 +63,7 @@ def update_players(data):
                 first_name = EXCLUDED.first_name,
                 last_name = EXCLUDED.last_name,
                 status = EXCLUDED.status,
-                team_code = EXCLUDED.team_code,
+                team_id = EXCLUDED.team_id,
                 opta_code = EXCLUDED.opta_code,
                 position = EXCLUDED.position,
                 now_cost = EXCLUDED.now_cost,
