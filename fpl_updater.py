@@ -33,7 +33,7 @@ def connect_db():
         password=os.getenv("POSTGRES_PASSWORD")
 )
     
-def update_players(data):
+def update_tables(data):
     conn = connect_db()
     cur = conn.cursor()
     
@@ -182,4 +182,4 @@ def update_players(data):
 
 if __name__ == "__main__":
     data = get_fpl_data()
-    update_players(data)
+    update_tables(data)
