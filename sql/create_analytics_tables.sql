@@ -37,7 +37,7 @@ SELECT DISTINCT
     p.expected_goals_conceded
 FROM core.players p
 LEFT JOIN core.teams t
-    ON p.team = t.team_id;
+    ON p.team_id = t.team_id;
 
 
 CREATE TABLE analytics.gameweeks AS
