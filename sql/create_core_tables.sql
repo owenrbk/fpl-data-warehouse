@@ -2,14 +2,14 @@
 -- Parses data from raw FPL JSON and creates unstructured tables
 
 CREATE TABLE IF NOT EXISTS core.players (
-    player_id INT PRIMARY KEY,
+    player_id NUMERIC(4) PRIMARY KEY,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
     status CHAR(1),
     team NUMERIC(2),
     opta_code CHAR(7),
     position NUMERIC(1),
-    now_cost NUMERIC(3,1),
+    now_cost NUMERIC(4,1),
     total_points NUMERIC(3),
     points_per_game NUMERIC(3,2),
     minutes NUMERIC(4),
