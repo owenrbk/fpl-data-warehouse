@@ -135,7 +135,7 @@ def update_tables(data):
             cur.execute("""
                 INSERT INTO core.teams (
                     team_id, team_name, team_short, position, strength, strength_overall_home, strength_overall_away, strength_attack_home, strength_attack_away, 
-                    strength_defence_home, strength_defence_away, code
+                    strength_defence_home, strength_defence_away
                 ) VALUES (
                     %(id)s, %(name)s, %(short_name)s, %(position)s, %(strength)s, %(strength_overall_home)s, %(strength_overall_away)s, %(strength_attack_home)s, 
                     %(strength_attack_away)s, %(strength_defence_home)s, %(strength_defence_away)s
