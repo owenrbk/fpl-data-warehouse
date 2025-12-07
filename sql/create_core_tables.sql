@@ -3,8 +3,8 @@
 
 CREATE TABLE IF NOT EXISTS core.players (
     player_id NUMERIC(4) PRIMARY KEY,
-    first_name VARCHAR(30),
-    last_name VARCHAR(30),
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
     status CHAR(1),
     team NUMERIC(2),
     opta_code CHAR(7),
