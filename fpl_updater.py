@@ -135,10 +135,10 @@ def update_tables(data):
             cur.execute("""
                 INSERT INTO core.teams (
                     team_id, team_name, team_short, position, strength, strength_overall_home, strength_overall_away, strength_attack_home, strength_attack_away, 
-                    strength_defence_home, strength_defence_away, pulse_id, code
+                    strength_defence_home, strength_defence_away, code
                 ) VALUES (
                     %(id)s, %(name)s, %(short_name)s, %(position)s, %(strength)s, %(strength_overall_home)s, %(strength_overall_away)s, %(strength_attack_home)s, 
-                    %(strength_attack_away)s, %(strength_defence_home)s, %(strength_defence_away)s, %(pulse_id)s, %(code)s
+                    %(strength_attack_away)s, %(strength_defence_home)s, %(strength_defence_away)s
                 )
                 ON CONFLICT (team_id) DO UPDATE
                 SET
@@ -152,9 +152,7 @@ def update_tables(data):
                     strength_attack_home = EXCLUDED.strength_attack_home,
                     strength_attack_away = EXCLUDED.strength_attack_away,
                     strength_defence_home = EXCLUDED.strength_defence_home,
-                    strength_defence_away = EXCLUDED.strength_defence_away,
-                    pulse_id = EXCLUDED.pulse_id,
-                    code = EXCLUDED.code;
+                    strength_defence_away = EXCLUDED.strength_defence_away;
             """, team)
     
         logging.info("Team updates finished...")
