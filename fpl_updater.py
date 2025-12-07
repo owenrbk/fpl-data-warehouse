@@ -50,7 +50,7 @@ def update_tables(data):
                     form, chance_of_playing_next_round, chance_of_playing_this_round,
                     corners_and_indirect_freekicks_order, direct_freekicks_order, penalties_order
                 ) VALUES (
-                    %(id)s, %(first_name)s, %(second_name)s, %(status)s, %(team_code)s,
+                    %(id)s, %(first_name)s, %(second_name)s, %(status)s, %(team)s,
                     %(opta_code)s, %(element_type)s, %(now_cost)s, %(total_points)s, %(points_per_game)s, %(minutes)s,
                     %(goals_scored)s, %(assists)s, %(clean_sheets)s, %(goals_conceded)s, %(own_goals)s, %(penalties_saved)s,
                     %(penalties_missed)s, %(yellow_cards)s, %(red_cards)s, %(saves)s, %(bonus)s, %(bps)s,
