@@ -80,3 +80,17 @@ CREATE TABLE IF NOT EXISTS core.chips (
     PRIMARY KEY (gameweek_id, chip_name)
 );
 
+CREATE TABLE IF NOT EXISTS core.fotmob_ratings (
+    match_id       bigint NOT NULL,
+    player_id      bigint,
+    player_name    text,
+    team_id        bigint,
+    team_name      text,
+    rating         numeric(3,1),
+    minutes_played int,
+    position       text,
+    rating_source  text,         -- e.g. 'fotmob'
+    match_date     timestamp with time zone,
+    created_at     timestamptz DEFAULT now(),
+    PRIMARY KEY (match_id, player_id)
+);
