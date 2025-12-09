@@ -61,82 +61,109 @@ def fetch_match_details(match_id):
 
 def normalize_player_rating(match_json):
     """
-    Extract player-level ratings from a fetched match JSON.
-    Returns a list of tuples matching fotmob.fotmob_ratings fields.
+    Universal extractor for FotMob ratings from matchDetails JSON.
+    Covers both flat playerStats structures and home/away teamPlayers.
+    Returns rows matching fotmob.fotmob_ratings schema.
     """
     rows = []
-    # fotmob match JSON shape can change. We try common structures observed:
-    # - match_json.get('match') or match_json directly contains fields
+
+    # --- Get match metadata ---
     mj = match_json.get("match") or match_json
-    match_id = mj.get("id") or mj.get("matchId") or mj.get("match_id")
-    match_date = mj.get("startTime") or mj.get("utcDate") or mj.get("beginAt")
-    # Try to find squads/players and ratings
-    # FotMob often includes arrays like 'home'/'away' lineups and 'players' sections.
-    # Two common places: mj['lineups'] or mj['players']
-    # We'll check for 'lineups' -> each team -> players -> rating
-    if "lineups" in mj and isinstance(mj["lineups"], list):
-        for team in mj["lineups"]:
-            team_id = team.get("teamId") or team.get("id")
-            team_name = team.get("team") or team.get("shortName") or team.get("name")
-            for pl in team.get("players", []):
-                pid = pl.get("id") or pl.get("playerId")
-                pname = pl.get("name") or pl.get("playerName")
-                rating = pl.get("rating") or pl.get("fotMobRating") or pl.get("ratingValue")
-                minutes = pl.get("minutesPlayed") or pl.get("min")
-                pos = pl.get("position") or pl.get("role")
-                if rating is None:
-                    continue
-                try:
-                    rating_num = float(rating)
-                except Exception:
-                    # sometimes rating is a string like "7.4"
-                    try:
-                        rating_num = float(str(rating))
-                    except:
-                        continue
-                rows.append((
-                    int(match_id) if match_id else None,
-                    int(pid) if pid else None,
-                    pname,
-                    int(team_id) if team_id else None,
-                    team_name,
-                    round(rating_num,1),
-                    int(minutes) if minutes else None,
-                    pos,
-                    'fotmob',
-                    match_date
-                ))
-    # fallback: check mj.get('players') top-level
-    elif "players" in mj and isinstance(mj["players"], list):
-        for pl in mj["players"]:
-            pid = pl.get("id")
-            pname = pl.get("name")
-            team_id = pl.get("teamId") or pl.get("team", {}).get("id")
-            team_name = None
-            rating = pl.get("rating")
-            minutes = pl.get("minutesPlayed")
-            pos = pl.get("position")
-            if rating is None:
-                continue
-            try:
-                rating_num = float(rating)
-            except:
-                continue
-            rows.append((
-                int(match_id) if match_id else None,
-                int(pid) if pid else None,
-                pname,
-                int(team_id) if team_id else None,
-                team_name,
-                round(rating_num,1),
-                int(minutes) if minutes else None,
-                pos,
-                'fotmob',
-                match_date
-            ))
-    else:
-        logging.debug("No lineups/players array found in match %s. Keys: %s", match_id, list(mj.keys())[:30])
+    match_id = (
+        mj.get("id") or
+        mj.get("matchId") or
+        mj.get("match_id")
+    )
+
+    match_date = (
+        mj.get("startTime") or
+        mj.get("utcDate") or
+        mj.get("beginAt")
+    )
+
+    # --- Actual playerStats section ---
+    playerStats = match_json.get("content", {}).get("playerStats")
+    if not playerStats:
+        return []
+
+    # ===========================================
+    # CASE 1 — Flat dictionary of players
+    # ===========================================
+    # {"422685": {player_data}, "1234": {...}}
+    if all(isinstance(v, dict) and "name" in v for v in playerStats.values()):
+        for pid, pdata in playerStats.items():
+            row = parse_fotmob_player(pid, pdata, match_id, match_date)
+            if row:
+                rows.append(row)
+        return rows
+
+    # ===========================================
+    # CASE 2 — Home/Away -> teamPlayers
+    # ===========================================
+    if "home" in playerStats and "away" in playerStats:
+        for side in ("home", "away"):
+            block = playerStats.get(side, {})
+            for pdata in block.get("teamPlayers", []):
+                pid = pdata.get("id") or pdata.get("playerId")
+                row = parse_fotmob_player(pid, pdata, match_id, match_date)
+                if row:
+                    rows.append(row)
+        return rows
+
+    # ===========================================
+    # CASE 3 — Deep scan fallback
+    # ===========================================
+    collected = []
+
+    def scan(obj):
+        if isinstance(obj, dict):
+            if "name" in obj and "stats" in obj:
+                collected.append(obj)
+            for v in obj.values():
+                scan(v)
+        elif isinstance(obj, list):
+            for v in obj:
+                scan(v)
+
+    scan(playerStats)
+
+    for pdata in collected:
+        pid = pdata.get("id") or pdata.get("playerId")
+        row = parse_fotmob_player(pid, pdata, match_id, match_date)
+        if row:
+            rows.append(row)
+
     return rows
+
+
+# Helper for single player
+def parse_fotmob_player(pid, pdata, match_id, match_date):
+    name = pdata.get("name")
+    team_id = pdata.get("teamId")
+    team_name = pdata.get("teamName")
+
+    # Scan all stats blocks for FotMob rating
+    rating = None
+    for block in pdata.get("stats", []):
+        stats_dict = block.get("stats", {})
+        if "FotMob rating" in stats_dict:
+            rating = stats_dict["FotMob rating"]["stat"]["value"]
+
+    if rating is None:
+        return None
+
+    return (
+        int(match_id),
+        int(pid),
+        name,
+        int(team_id) if team_id else None,
+        team_name,
+        float(rating),
+        None,          # minutesPlayed unavailable in your snippet
+        None,          # position unavailable in your snippet
+        "fotmob",
+        match_date
+    )
 
 def upsert_ratings(rows, conn):
     if not rows:
