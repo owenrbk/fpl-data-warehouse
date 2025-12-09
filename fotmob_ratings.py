@@ -14,16 +14,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Config from env
-FOTMOB_LEAGUE_ID = os.getenv("FOTMOB_LEAGUE_ID", "47")            # 47 = Premier League
-FOTMOB_SEASON = os.getenv("FOTMOB_SEASON", "2025/2026")           # e.g. "2025/2026"
-USER_AGENT = os.getenv("FOTMOB_USER_AGENT","Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36")
+def require_env(var_name):
+    """Crash the script if an env var is missing."""
+    value = os.getenv(var_name)
+    if value is None or value.strip() == "":
+        print(f"ERROR: Missing required environment variable: {var_name}")
+        sys.exit(1)
+    return value
 
-PG_HOST = os.getenv("POSTGRES_HOST", "127.0.0.1")
-PG_PORT = os.getenv("POSTGRES_PORT", "5432")
-PG_DB   = os.getenv("POSTGRES_DB", "owen_db")
-PG_USER = os.getenv("POSTGRES_USER", "owen")
-PG_PW   = os.getenv("POSTGRES_PASSWORD", "")
+# Config from env
+FOTMOB_LEAGUE_ID = require_env("FOTMOB_LEAGUE_ID")
+FOTMOB_SEASON    = require_env("FOTMOB_SEASON")
+USER_AGENT       = require_env("FOTMOB_USER_AGENT")
+
+PG_HOST = require_env("POSTGRES_HOST")
+PG_PORT = require_env("POSTGRES_PORT")
+PG_DB   = require_env("POSTGRES_DB")
+PG_USER = require_env("POSTGRES_USER")
+PG_PW   = require_env("POSTGRES_PASSWORD")
 
 # Tuning
 RATE_LIMIT_SECONDS = float(os.getenv("FOTMOB_RATE_LIMIT_SECONDS", "0.25"))  # 4 requests/sec by default
