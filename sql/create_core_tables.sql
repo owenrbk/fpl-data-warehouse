@@ -2,86 +2,98 @@
 -- Parses data from raw FPL JSON and creates unstructured tables
 
 DROP TABLE IF EXISTS core.players;
-CREATE TABLE IF NOT EXISTS core.players (
-    player_id NUMERIC(4) PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    status CHAR(1),
-    team NUMERIC(2),
-    opta_code CHAR(7),
-    position NUMERIC(1),
-    now_cost NUMERIC(4,1),
-    total_points NUMERIC(3),
-    points_per_game NUMERIC(3,2),
-    minutes NUMERIC(4),
-    goals_scored NUMERIC(3),
-    assists NUMERIC(3),
-    clean_sheets NUMERIC(2),
-    goals_conceded NUMERIC(4),
-    own_goals NUMERIC(3),
-    penalties_saved NUMERIC(3),
-    penalties_missed NUMERIC(3),
-    yellow_cards NUMERIC(2),
-    red_cards NUMERIC(2),
-    saves NUMERIC(4),
-    bonus NUMERIC(4),
-    bps NUMERIC(5),
-    influence NUMERIC(4,1),
-    creativity NUMERIC(4,1),
-    threat NUMERIC(4,1),
-    ict_index NUMERIC(4,1),
-    clearances_blocks_interceptions NUMERIC(4),
-    recoveries NUMERIC(4),
-    tackles NUMERIC(4),
-    defensive_contributions NUMERIC(4),
-    starts NUMERIC(2),
-    expected_goals NUMERIC(5,2),
-    expected_assists NUMERIC(5,2),
-    expected_goal_involvements NUMERIC(5,2),
-    expected_goals_conceded NUMERIC(5,2),
-    form NUMERIC(3,1),
-    chance_of_playing_next_round NUMERIC(3),
-    chance_of_playing_this_round NUMERIC(3),
-    corners_and_indirect_freekicks_order NUMERIC(2),
-    direct_freekicks_order NUMERIC(2),
-    penalties_order NUMERIC(2)
-);
+CREATE TABLE IF NOT EXISTS core.players
+(
+    player_id numeric(4,0) NOT NULL,
+    first_name character varying(50) COLLATE pg_catalog."default",
+    last_name character varying(50) COLLATE pg_catalog."default",
+    status character(1) COLLATE pg_catalog."default",
+    team_id numeric(2,0),
+    opta_code character(7) COLLATE pg_catalog."default",
+    "position" numeric(1,0),
+    now_cost numeric(4,1),
+    total_points numeric(3,0),
+    points_per_game numeric(3,2),
+    minutes numeric(4,0),
+    goals_scored numeric(3,0),
+    assists numeric(3,0),
+    clean_sheets numeric(2,0),
+    goals_conceded numeric(4,0),
+    own_goals numeric(3,0),
+    penalties_saved numeric(3,0),
+    penalties_missed numeric(3,0),
+    yellow_cards numeric(2,0),
+    red_cards numeric(2,0),
+    saves numeric(4,0),
+    bonus numeric(4,0),
+    bps numeric(5,0),
+    influence numeric(4,1),
+    creativity numeric(4,1),
+    threat numeric(4,1),
+    ict_index numeric(4,1),
+    clearances_blocks_interceptions numeric(4,0),
+    recoveries numeric(4,0),
+    tackles numeric(4,0),
+    defensive_contributions numeric(4,0),
+    starts numeric(2,0),
+    expected_goals numeric(5,2),
+    expected_assists numeric(5,2),
+    expected_goal_involvements numeric(5,2),
+    expected_goals_conceded numeric(5,2),
+    form numeric(3,1),
+    chance_of_playing_next_round numeric(3,0),
+    chance_of_playing_this_round numeric(3,0),
+    corners_and_indirect_freekicks_order numeric(2,0),
+    direct_freekicks_order numeric(2,0),
+    penalties_order numeric(2,0),
+    CONSTRAINT players_pkey PRIMARY KEY (player_id)
+)
 
 DROP TABLE IF EXISTS core.teams;
-CREATE TABLE IF NOT EXISTS core.teams (
-    team_id NUMERIC(3) PRIMARY KEY,
-    team_name VARCHAR(50),
-    position NUMERIC(2),
-    strength NUMERIC(4),
-    strength_overall_home NUMERIC(4),
-    strength_overall_away NUMERIC(4),
-    strength_attack_home NUMERIC(4),
-    strength_attack_away NUMERIC(4),
-    strength_defence_home NUMERIC(4),
-    strength_defence_away NUMERIC(4)
-);
+CREATE TABLE IF NOT EXISTS core.teams
+(
+    team_id numeric(3,0) NOT NULL,
+    team_name character varying(50) COLLATE pg_catalog."default",
+    team_short character(3) COLLATE pg_catalog."default",
+    "position" numeric(2,0),
+    strength numeric(4,0),
+    strength_overall_home numeric(4,0),
+    strength_overall_away numeric(4,0),
+    strength_attack_home numeric(4,0),
+    strength_attack_away numeric(4,0),
+    strength_defence_home numeric(4,0),
+    strength_defence_away numeric(4,0),
+    CONSTRAINT teams_pkey PRIMARY KEY (team_id)
+)
 
 DROP TABLE IF EXISTS core.gameweeks;
-CREATE TABLE IF NOT EXISTS core.gameweeks (
-    gameweek_id NUMERIC(2) PRIMARY KEY,
-    average_score NUMERIC(3),
-    highest_score NUMERIC(3),
-    ranked_count NUMERIC(10),
-    most_selected NUMERIC(4),
-    most_transferred_in NUMERIC(4),
-    most_captained NUMERIC(4),
-    most_vice_captained NUMERIC(4),
-    top_player NUMERIC(4),
-    transfers_made NUMERIC(10)
-);
+CREATE TABLE IF NOT EXISTS core.gameweeks
+(
+    gameweek_id numeric(2,0) NOT NULL,
+    average_score numeric(3,0),
+    highest_score numeric(3,0),
+    ranked_count numeric(10,0),
+    most_selected numeric(4,0),
+    most_transferred_in numeric(4,0),
+    most_captained numeric(4,0),
+    most_vice_captained numeric(4,0),
+    top_player numeric(4,0),
+    transfers_made numeric(10,0),
+    CONSTRAINT gameweeks_pkey PRIMARY KEY (gameweek_id)
+)
 
 DROP TABLE IF EXISTS core.chips;
-CREATE TABLE IF NOT EXISTS core.chips (
-    gameweek_id NUMERIC(2) REFERENCES core.gameweeks(gameweek_id),
-    chip_name VARCHAR(20),
-    num_played NUMERIC(10),
-    PRIMARY KEY (gameweek_id, chip_name)
-);
+CREATE TABLE IF NOT EXISTS core.chips
+(
+    gameweek_id numeric(2,0) NOT NULL,
+    chip_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    num_played numeric(10,0),
+    CONSTRAINT chips_pkey PRIMARY KEY (gameweek_id, chip_name),
+    CONSTRAINT chips_gameweek_id_fkey FOREIGN KEY (gameweek_id)
+        REFERENCES core.gameweeks (gameweek_id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
 
 DROP TABLE IF EXISTS core.fotmob_ratings;
 CREATE TABLE IF NOT EXISTS core.fotmob_ratings
