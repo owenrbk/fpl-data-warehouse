@@ -1,6 +1,7 @@
 -- create_core_tables.sql
 -- Parses data from raw FPL JSON and creates unstructured tables
 
+DROP TABLE IF EXISTS core.players;
 CREATE TABLE IF NOT EXISTS core.players (
     player_id NUMERIC(4) PRIMARY KEY,
     first_name VARCHAR(50),
@@ -46,10 +47,10 @@ CREATE TABLE IF NOT EXISTS core.players (
     penalties_order NUMERIC(2)
 );
 
+DROP TABLE IF EXISTS core.teams;
 CREATE TABLE IF NOT EXISTS core.teams (
     team_id NUMERIC(3) PRIMARY KEY,
     team_name VARCHAR(50),
-    team_short CHAR(3),
     position NUMERIC(2),
     strength NUMERIC(4),
     strength_overall_home NUMERIC(4),
@@ -60,6 +61,7 @@ CREATE TABLE IF NOT EXISTS core.teams (
     strength_defence_away NUMERIC(4)
 );
 
+DROP TABLE IF EXISTS core.gameweeks;
 CREATE TABLE IF NOT EXISTS core.gameweeks (
     gameweek_id NUMERIC(2) PRIMARY KEY,
     average_score NUMERIC(3),
@@ -73,6 +75,7 @@ CREATE TABLE IF NOT EXISTS core.gameweeks (
     transfers_made NUMERIC(10)
 );
 
+DROP TABLE IF EXISTS core.chips;
 CREATE TABLE IF NOT EXISTS core.chips (
     gameweek_id NUMERIC(2) REFERENCES core.gameweeks(gameweek_id),
     chip_name VARCHAR(20),
@@ -80,17 +83,26 @@ CREATE TABLE IF NOT EXISTS core.chips (
     PRIMARY KEY (gameweek_id, chip_name)
 );
 
-CREATE TABLE IF NOT EXISTS core.fotmob_ratings (
-    match_id       bigint NOT NULL,
-    player_id      bigint,
-    player_name    text,
-    team_id        bigint,
-    team_name      text,
-    rating         numeric(3,1),
-    minutes_played int,
-    position       text,
-    rating_source  text,         -- e.g. 'fotmob'
-    match_date     timestamp with time zone,
-    created_at     timestamptz DEFAULT now(),
-    PRIMARY KEY (match_id, player_id)
+DROP TABLE IF EXISTS core.fotmob_ratings;
+CREATE TABLE IF NOT EXISTS core.fotmob_ratings
+(
+    match_id integer NOT NULL,
+    player_id integer NOT NULL,
+    player_name character varying(50) COLLATE pg_catalog."default",
+    team_id integer,
+    team_name character varying(50) COLLATE pg_catalog."default",
+    rating numeric(3,1),
+    minutes_played integer,
+    "position" character varying(3) COLLATE pg_catalog."default",
+    opta_id integer,
+    CONSTRAINT fotmob_ratings_pkey PRIMARY KEY (match_id, player_id)
+);
+
+DROP TABLE IF EXISTS core.fotmob_nations;
+CREATE TABLE IF NOT EXISTS core.fotmob_nations
+(
+    player_id integer NOT NULL,
+    player_name character varying(50) COLLATE pg_catalog."default",
+    nation character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT fotmob_nations_pkey PRIMARY KEY (player_id)
 );
