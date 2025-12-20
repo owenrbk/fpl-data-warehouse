@@ -31,19 +31,15 @@ def get_connection():
 # ----------------------------
 # FPL configuration
 # ----------------------------
-# FPL extract.py expects this exact name
 FPL_API_URL = "https://fantasy.premierleague.com/api/bootstrap-static/"
-
-# If you later add FPL season logic, you can pull it from env:
-# FPL_SEASON = os.getenv("FPL_SEASON")
 
 # ----------------------------
 # FotMob configuration
 # ----------------------------
-FOTMOB_LEAGUE_ID = os.getenv("FOTMOB_LEAGUE_ID")   # e.g. "47"
-FOTMOB_SEASON    = os.getenv("FOTMOB_SEASON")      # e.g. "2025/2026"
-
-# User agent for FotMob scraping
+FOTMOB_START_MATCH_ID = int(os.getenv("FOTMOB_START_MATCH_ID"))
+FOTMOB_END_MATCH_ID = int(os.getenv("FOTMOB_END_MATCH_ID"))
+FOTMOB_RATE_LIMIT_SECONDS = float(os.getenv("FOTMOB_RATE_LIMIT_SECONDS", "0.25"))
+FOTMOB_BATCH_SIZE = int(os.getenv("FOTMOB_BATCH_COMMIT_SIZE", "50"))
 USER_AGENT = os.getenv("FOTMOB_USER_AGENT")
 HEADERS = {"User-Agent": USER_AGENT} if USER_AGENT else {}
 

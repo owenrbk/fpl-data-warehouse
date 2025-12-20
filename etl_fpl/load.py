@@ -1,6 +1,11 @@
+from pathlib import Path
+import sys
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(PROJECT_ROOT))
+
 import psycopg2
 import logging
-from config import POSTGRES_CONFIG
+from config.config import POSTGRES_CONFIG
 
 def connect_db():
     return psycopg2.connect(**POSTGRES_CONFIG)
@@ -18,7 +23,7 @@ def load_players(cur, players):
             goals_scored, assists, clean_sheets, goals_conceded, own_goals, penalties_saved,
             penalties_missed, yellow_cards, red_cards, saves, bonus, bps,
             influence, creativity, threat, ict_index, clearances_blocks_interceptions,
-            recoveries, tackles, defensive_contribution, starts,
+            recoveries, tackles, defensive_contributions, starts,
             expected_goals, expected_assists, expected_goal_involvements, expected_goals_conceded,
             form, chance_of_playing_next_round, chance_of_playing_this_round,
             corners_and_indirect_freekicks_order, direct_freekicks_order, penalties_order
@@ -65,7 +70,7 @@ def load_players(cur, players):
             clearances_blocks_interceptions = EXCLUDED.clearances_blocks_interceptions,
             recoveries = EXCLUDED.recoveries,
             tackles = EXCLUDED.tackles,
-            defensive_contribution = EXCLUDED.defensive_contribution,
+            defensive_contributions = EXCLUDED.defensive_contributions,
             starts = EXCLUDED.starts,
             expected_goals = EXCLUDED.expected_goals,
             expected_assists = EXCLUDED.expected_assists,

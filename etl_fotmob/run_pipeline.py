@@ -1,75 +1,96 @@
 # etl_fotmob/run_pipeline.py
 
-import time
-import traceback
-from config import logger, FOTMOB_LEAGUE_ID, FOTMOB_SEASON
-from etl_fotmob.extract import fetch_season_matches, fetch_match_details
-from etl_fotmob.transform import normalize_player_rating
-from etl_fotmob.load import upsert_ratings, get_connection
+import sys, os
+print("PYTHON:", sys.executable)
+print("CWD:", os.getcwd())
+print("SYS.PATH[0:3]:", sys.path[:3])
 
-BATCH_SIZE = 50
-RATE_LIMIT_SECONDS = 0.25  # 4 req/sec
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(PROJECT_ROOT))
+
+import time
+from config.config import logger, FOTMOB_START_MATCH_ID, FOTMOB_END_MATCH_ID, FOTMOB_RATE_LIMIT_SECONDS, FOTMOB_BATCH_SIZE
+from etl_fotmob.extract import fetch_match_details
+from etl_fotmob.transform import normalize_player_rating
+from etl_fotmob.load import upsert_fotmob_ratings, upsert_fotmob_nations, get_connection  # <-- see note below
 
 def run_pipeline():
-    logger.info(f"Starting FotMob ETL for league={FOTMOB_LEAGUE_ID}, season={FOTMOB_SEASON}")
-
-    try:
-        season_json = fetch_season_matches(FOTMOB_LEAGUE_ID, FOTMOB_SEASON)
-    except Exception as e:
-        logger.error("Failed to fetch season match list")
-        logger.error(traceback.format_exc())
-        return
-
-    matches = season_json.get("matches") or season_json.get("data") or []
-    if not matches:
-        logger.warning("No matches found in season JSON response")
-        return
-
-    match_ids = []
-    for match in matches:
-        mid = match.get("id") or match.get("matchId") or match.get("fixtureId")
-        if mid:
-            match_ids.append(int(mid))
-
-    logger.info(f"Found {len(match_ids)} matches")
+    logger.info("Starting FotMob ETL for Premier League 2025/26")
+    logger.info(f"Match ID range: {FOTMOB_START_MATCH_ID} -> {FOTMOB_END_MATCH_ID} (inclusive)")
+    logger.info(f"RATE_LIMIT_SECONDS={FOTMOB_RATE_LIMIT_SECONDS}, BATCH_SIZE={FOTMOB_BATCH_SIZE}")
 
     conn = get_connection()
-    batch = []
+    ratings_batch = []
+    nations_batch = []
 
-    for idx, match_id in enumerate(match_ids, start=1):
+    for match_id in range(FOTMOB_START_MATCH_ID, FOTMOB_END_MATCH_ID + 1):
         try:
             match_json = fetch_match_details(match_id)
         except Exception:
-            logger.error(f"Failed fetch for match {match_id}")
-            logger.error(traceback.format_exc())
-            time.sleep(3)
+            logger.warning(f"Failed to fetch match {match_id}")
+            time.sleep(0.5)
             continue
 
-        rows = normalize_player_rating(match_json)
-        if rows:
-            batch.extend(rows)
+        if not match_json:
+            continue
 
-        # ---- Batch insert ----
-        if len(batch) >= BATCH_SIZE:
+        if match_id % 10 == 0:
+            logger.info(f"Processing match_id={match_id}")
+
+        mj = match_json.get("match") or match_json
+        content = mj.get("content")
+        if not content:
+            logger.warning(f"Skipping match {match_id}: no content")
+            continue
+
+        transformed = normalize_player_rating(match_json, match_id)
+
+        ratings = transformed.get("ratings", [])
+        nations = transformed.get("nations", [])
+        logger.info(f"match_id={match_id} extracted ratings={len(ratings)} nations={len(nations)}")
+
+        if ratings:
+            ratings_batch.extend(ratings)
+        if nations:
+            nations_batch.extend(nations)
+
+        # Batch insert
+        if len(ratings_batch) >= FOTMOB_BATCH_SIZE:
             try:
-                upsert_ratings(batch, conn)
-                logger.info(f"Inserted {len(batch)} rows (through match {match_id})")
-                batch = []
+                upsert_fotmob_ratings(ratings_batch, conn)
+                logger.info(f"Inserted {len(ratings_batch)} ratings rows (through match {match_id})")
+                ratings_batch = []
             except Exception:
-                logger.error("Batch insert failed")
-                logger.error(traceback.format_exc())
+                logger.exception("Ratings batch insert failed")
+                conn.rollback()
+                ratings_batch = []
 
-        # Rate limit so FotMob doesn't block you
-        time.sleep(RATE_LIMIT_SECONDS)
+        if len(nations_batch) >= FOTMOB_BATCH_SIZE:
+            # Deduplicate by player_id
+            deduped = {}
+            for pid, pname, nation in nations_batch:
+                deduped[pid] = (pid, pname, nation)
 
-    # Final flush of leftovers
-    if batch:
-        try:
-            upsert_ratings(batch, conn)
-            logger.info(f"Final commit of {len(batch)} rows")
-        except Exception:
-            logger.error("Final commit failed")
-            logger.error(traceback.format_exc())
+            try:
+                upsert_fotmob_nations(list(deduped.values()), conn)
+                logger.info(f"Inserted {len(deduped)} nation rows")
+                nations_batch = []
+            except Exception:
+                logger.exception("Nations batch insert failed")
+                conn.rollback()
+                nations_batch = []
+
+        time.sleep(FOTMOB_RATE_LIMIT_SECONDS)
+
+    # Final flush
+    if ratings_batch:
+        upsert_fotmob_ratings(ratings_batch, conn)
+        logger.info(f"Final insert of {len(ratings_batch)} rating rows")
+
+    if nations_batch:
+        deduped = {pid: (pid, pname, nation) for pid, pname, nation in nations_batch}
+        upsert_fotmob_nations(list(deduped.values()), conn)
 
     conn.close()
     logger.info("FotMob ETL complete.")

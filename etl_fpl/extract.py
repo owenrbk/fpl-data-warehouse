@@ -1,6 +1,11 @@
+import sys
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(PROJECT_ROOT))
+
 import requests
 import logging
-from config import FPL_API_URL
+from config.config import FPL_API_URL
 
 def extract_fpl_data():
     logging.info("Extracting data from FPL API...")
