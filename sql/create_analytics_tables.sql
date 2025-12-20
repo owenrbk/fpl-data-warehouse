@@ -1,4 +1,5 @@
-CREATE TABLE analytics.all_players AS
+DROP TABLE IF EXISTS analytics.all_players;
+CREATE TABLE analytics.all_players IF NOT EXISTS AS
 SELECT DISTINCT
     player_id,
     CONCAT(p.first_name, ' ', p.last_name) AS full_name,
@@ -39,8 +40,37 @@ FROM core.players p
 LEFT JOIN core.teams t
     ON p.team_id = t.team_id;
 
+DROP TABLE IF EXISTS analytics.all_teams;
 
-CREATE TABLE analytics.gameweeks AS
+CREATE TABLE analytics.all_teams AS
+SELECT
+    t.team_id,
+    t.team_name,
+    t.position AS fpl_table_position,
+    t.strength,
+    t.strength_overall_home,
+    t.strength_overall_away,
+    t.strength_attack_home,
+    t.strength_attack_away,
+    t.strength_defence_home,
+    t.strength_defence_away,
+    fm.avg_fotmob_rating,
+    fm.matched_fotmob_team,
+    fm.similarity_score
+FROM core.teams t
+LEFT JOIN LATERAL (
+    SELECT
+        fr.team_name AS matched_fotmob_team,
+        AVG(fr.rating) AS avg_fotmob_rating,
+        similarity(fr.team_name, t.team_name) AS similarity_score
+    FROM core.fotmob_ratings fr
+    GROUP BY fr.team_name
+    ORDER BY similarity(fr.team_name, t.team_name) DESC
+    LIMIT 1
+) fm ON TRUE;
+
+DROP TABLE IF EXISTS analytics.gameweeks;
+CREATE TABLE analytics.gameweeks IF NOT EXISTS AS
 SELECT
     g.gameweek_id AS Gameweek,
     g.average_score AS "Average Score",
