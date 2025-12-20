@@ -1,21 +1,41 @@
 DROP TABLE IF EXISTS analytics.all_players;
 CREATE TABLE analytics.all_players IF NOT EXISTS AS
-SELECT DISTINCT
-    player_id,
+WITH fotmob_agg AS (
+    SELECT
+        fr.player_id                       AS fotmob_player_id,
+        fr.opta_id                         AS opta_id,
+
+        -- most used FotMob position
+        mode() WITHIN GROUP (ORDER BY fr.position) 
+            AS primary_fotmob_position,
+
+        ROUND(AVG(fr.rating)::numeric, 1)                    AS avg_fotmob_rating,
+        ROUND(AVG(fr.minutes_played)::numeric, 1)             AS avg_minutes_played,
+        SUM(fr.minutes_played)              AS total_minutes_played,
+        COUNT(*)                           AS fotmob_match_count
+    FROM core.fotmob_ratings fr
+    GROUP BY fr.player_id, fr.opta_id
+)
+SELECT
+    fa.fotmob_player_id                   AS player_id,
     CONCAT(p.first_name, ' ', p.last_name) AS full_name,
     t.team_name,
-    t.team_short,
+    n.nation,
     CASE p.position
         WHEN 1 THEN 'GKP'
         WHEN 2 THEN 'DEF'
         WHEN 3 THEN 'MID'
         WHEN 4 THEN 'FWD'
-    END AS position,
-    p.now_cost/10 AS cost,
+    END                                   AS fpl_position,
+    fa.primary_fotmob_position,
+    fa.avg_fotmob_rating,
+    fa.avg_minutes_played,
+    fa.total_minutes_played,
+    fa.fotmob_match_count,
+    ROUND((p.now_cost / 10.0)::numeric, 1)                       AS cost,
     p.form,
     p.total_points,
     p.points_per_game,
-    p.minutes,
     p.goals_scored,
     p.assists,
     p.clean_sheets,
@@ -36,9 +56,13 @@ SELECT DISTINCT
     p.expected_assists,
     p.expected_goal_involvements,
     p.expected_goals_conceded
-FROM core.players p
+FROM fotmob_agg fa
+LEFT JOIN core.players p
+    ON regexp_replace(p.opta_code, '^p', '')::int = fa.opta_id
 LEFT JOIN core.teams t
-    ON p.team_id = t.team_id;
+    ON p.team_id = t.team_id
+LEFT JOIN core.fotmob_nations n
+    ON fa.fotmob_player_id = n.player_id;
 
 DROP TABLE IF EXISTS analytics.all_teams;
 
