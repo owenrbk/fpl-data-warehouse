@@ -145,7 +145,7 @@ GROUP BY
 
 DROP TABLE IF EXISTS analytics.positions;
 CREATE TABLE analytics.positions (
-    primary_fotmob_position VARCHAR(5) PRIMARY KEY,
+    primary_fotmob_position VARCHAR(6) PRIMARY KEY,
     x INT NOT NULL,
     y INT NOT NULL
 );
