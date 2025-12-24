@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS analytics.all_players;
-CREATE TABLE analytics.all_players IF NOT EXISTS AS
+CREATE TABLE analytics.all_players AS
 WITH fotmob_agg AS (
     SELECT
         fr.player_id                       AS fotmob_player_id,
