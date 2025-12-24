@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS core.fotmob_ratings
     team_name character varying(50) COLLATE pg_catalog."default",
     rating numeric(3,1),
     minutes_played integer,
-    "position" character varying(3) COLLATE pg_catalog."default",
+    "position" character varying(6) COLLATE pg_catalog."default",
     opta_id integer,
     CONSTRAINT fotmob_ratings_pkey PRIMARY KEY (match_id, player_id)
 );
