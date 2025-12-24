@@ -11,8 +11,8 @@ POSITION_ID_MAP = {
 
     # Midfield
     "CAM": {84, 85, 86},
-    "LWB/LM": {58, 59, 68, 59, 78, 79}
-    "RWB/RM": {51, 52, 61, 62, 71, 72}
+    "LWB/LM": {58, 59, 68, 59, 78, 79},
+    "RWB/RM": {51, 52, 61, 62, 71, 72},
     "CM":  {73, 74, 75, 76, 77},
     "CDM": {63, 64, 65, 66, 67},
 
@@ -22,7 +22,7 @@ POSITION_ID_MAP = {
     "CB":  {33, 34, 35, 36, 37},
 
     # Goalkeeper
-    "GK":  {11},
+    "GK":  {11}
 }
 
 # Assigns position to position ids
@@ -135,7 +135,6 @@ def normalize_player_rating(match_json, match_id):
             float(rating),
             int(minutes) if minutes is not None else None,
             position,
-            match_date,
             opta_id
         ))
 

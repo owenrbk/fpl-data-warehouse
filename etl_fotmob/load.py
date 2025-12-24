@@ -19,8 +19,8 @@ def get_connection():
 def upsert_fotmob_ratings(rows, conn):
     """
     rows tuple order:
-    (match_id, player_id, player_name, opta_id, team_id, team_name,
-     rating, minutes_played, position, rating_source, match_date)
+    (match_id, player_id, player_name, team_id, team_name,
+     rating, minutes_played, position, opta_id)
     """
     if not rows:
         return
@@ -36,7 +36,8 @@ def upsert_fotmob_ratings(rows, conn):
         team_name = EXCLUDED.team_name,
         rating = EXCLUDED.rating,
         minutes_played = EXCLUDED.minutes_played,
-        position = EXCLUDED.position
+        position = EXCLUDED.position,
+        opta_id = EXCLUDED.opta_id
     """
 
     with conn.cursor() as cur:
