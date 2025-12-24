@@ -142,3 +142,23 @@ GROUP BY
     p_most_captained.full_name,
     p_most_vice_captained.full_name,
     p_top_player.full_name;
+
+DROP TABLE IF EXISTS analytics.positions;
+CREATE TABLE analytics.positions (
+    primary_fotmob_position VARCHAR(5) PRIMARY KEY,
+    x INT NOT NULL,
+    y INT NOT NULL
+);
+INSERT INTO analytics.positions (primary_fotmob_position, x, y) VALUES
+('ST',  5, 9),
+('LW',  2, 8),
+('RW',  8, 8),
+('CAM', 5, 7),
+('CM',  5, 6),
+('LWB/LM', 2, 5),
+('CDM', 5, 5),
+('RWB/RM', 8, 5),
+('LB',  2, 3),
+('CB',  5, 3),
+('RB',  8, 3),
+('GK',  5, 1);
