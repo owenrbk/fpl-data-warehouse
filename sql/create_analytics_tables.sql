@@ -51,11 +51,18 @@ SELECT
     p.creativity,
     p.threat,
     p.ict_index,
+	p.clearances_blocks_interceptions,
+	p.recoveries,
+	p.tackles,
+	p.defensive_contributions,
     p.starts,
     p.expected_goals,
     p.expected_assists,
     p.expected_goal_involvements,
-    p.expected_goals_conceded
+    p.expected_goals_conceded,
+	p.corners_and_indirect_freekicks_order,
+	p.direct_freekicks_order,
+	p.penalties_order
 FROM fotmob_agg fa
 LEFT JOIN core.players p
     ON regexp_replace(p.opta_code, '^p', '')::int = fa.opta_id
@@ -63,6 +70,7 @@ LEFT JOIN core.teams t
     ON p.team_id = t.team_id
 LEFT JOIN core.fotmob_nations n
     ON fa.fotmob_player_id = n.player_id;
+
 
 DROP TABLE IF EXISTS analytics.all_teams;
 
