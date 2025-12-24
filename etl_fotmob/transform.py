@@ -4,11 +4,10 @@ from config.config import logger
 
 # Maps positions based on positon id
 POSITION_ID_MAP = {
-    # Forwards
+    # Attack
     "ST":  {104, 105, 106, 115},
     "LW":  {87, 88, 89, 107, 109},
     "RW":  {81, 82, 83, 101, 103},
-
 
     # Midfield
     "CAM": {84, 85, 86},
