@@ -2,6 +2,7 @@
 
 from config.config import logger
 
+# Maps positions based on positon id
 POSITION_ID_MAP = {
     # Forwards
     "ST":  {104, 105, 106, 115},
@@ -25,7 +26,7 @@ POSITION_ID_MAP = {
     "GK":  {11},
 }
 
-
+# Assigns position to position ids
 def resolve_position(position_id):
     if position_id is None:
         return None
@@ -37,7 +38,7 @@ def resolve_position(position_id):
     logger.warning(f"Unknown FotMob positionId encountered: {position_id}")
     return None
 
-
+# Looks for stats in json file
 def _get_top_stats_block(stats_blocks):
     for block in stats_blocks or []:
         if block.get("key") == "top_stats" or block.get("title") == "Top stats":
@@ -54,7 +55,7 @@ def _extract_stat_value(top_block, label):
     except Exception:
         return None
 
-
+# Defines what to extract
 def _extract_player_meta(player_obj):
     if isinstance(player_obj.get("stats"), list) and player_obj["stats"]:
         meta0 = player_obj["stats"][0]
@@ -79,7 +80,7 @@ def _extract_player_meta(player_obj):
         "top_container": None,
     }
 
-
+# Runs through every match looking for data
 def normalize_player_rating(match_json, match_id):
     """
     Returns:
@@ -105,6 +106,7 @@ def normalize_player_rating(match_json, match_id):
         f"match_id={match_id} playerStats keys={len(players_map)}"
     )
 
+    # Extract Player Stat Data
     for pid_key, player_obj in players_map.items():
         pid = int(pid_key)
 
@@ -138,7 +140,7 @@ def normalize_player_rating(match_json, match_id):
             opta_id
         ))
 
-    # ---- Nations (starters + subs + unavailable) ----
+    # Extract Nation Data
     nation_rows = []
 
     lineup = content.get("lineup", {})
