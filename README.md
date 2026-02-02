@@ -4,11 +4,10 @@
 
 This project is a Fantasy Premier League (FPL) data warehouse built to collect, organize, and analyze FPL data. 
 It starts by pulling raw JSON data from the FPL API — including player stats, team info, fixtures, and gameweek performance — and loading it into a PostgreSQL database. 
-From there, the data is structured into relational tables that make it easy to query, analyze trends, and create dashboards in tools like Tableau or Excel.
+From there, the data is structured into relational tables that make it easy to query, analyze trends, and create dashboards in Power BI.
 
 ## Background
 
-The project was initially developed in the cloud using Neon PostgreSQL, which allowed quick setup, browser-based access, and the ability to work around limitations on a work laptop. 
 Raw JSON data is first stored as-is, then parsed into tables such as players, teams, fixtures, and player history. 
 This workflow enables tracking player performance over time, analyzing manager trends, and building analytics-ready views without touching the raw data each time.
 
