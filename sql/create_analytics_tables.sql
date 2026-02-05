@@ -162,3 +162,44 @@ INSERT INTO analytics.positions (primary_fotmob_position, x, y) VALUES
 ('CB',  5, 3),
 ('RB',  8, 3),
 ('GK',  5, 1);
+
+DROP TABLE IF EXISTS analytics.position_overlap;
+CREATE TABLE analytics.position_overlap IF NOT EXISTS AS
+WITH primary_positions AS (
+    SELECT
+        player_id,
+        position AS primary_position
+    FROM (
+        SELECT
+            player_id,
+            position,
+            SUM(minutes_played) AS mins,
+            ROW_NUMBER() OVER (
+                PARTITION BY player_id
+                ORDER BY SUM(minutes_played) DESC
+            ) AS rn
+        FROM core.fotmob_ratings
+        WHERE minutes_played > 0
+        GROUP BY player_id, position
+    ) ranked
+    WHERE rn = 1
+),
+appearance_data AS (
+    SELECT
+        fr.player_id,
+        pp.primary_position,
+        fr.position AS played_position,
+        fr.minutes_played
+    FROM core.fotmob_ratings fr
+    JOIN primary_positions pp
+        ON fr.player_id = pp.player_id
+    WHERE fr.minutes_played > 0
+)
+SELECT
+    primary_position,
+    played_position,
+    SUM(minutes_played) AS total_minutes,
+    COUNT(DISTINCT player_id) AS players_involved,
+    COUNT(*) AS match_appearances
+FROM appearance_data
+GROUP BY primary_position, played_position;
