@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS analytics.all_players;
-CREATE TABLE analytics.all_players AS
+CREATE OR REPLACE VIEW analytics.all_players AS
 WITH fotmob_agg AS (
     SELECT
         fr.player_id                       AS fotmob_player_id,
@@ -72,9 +71,7 @@ LEFT JOIN core.fotmob_nations n
     ON fa.fotmob_player_id = n.player_id;
 
 
-DROP TABLE IF EXISTS analytics.all_teams;
-
-CREATE TABLE analytics.all_teams AS
+CREATE OR REPLACE VIEW analytics.all_teams AS
 SELECT
     t.team_id,
     t.team_name,
@@ -101,8 +98,7 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) fm ON TRUE;
 
-DROP TABLE IF EXISTS analytics.gameweeks;
-CREATE TABLE analytics.gameweeks IF NOT EXISTS AS
+CREATE OR REPLACE VIEW analytics.gameweeks AS
 SELECT
     g.gameweek_id AS Gameweek,
     g.average_score AS "Average Score",
@@ -162,9 +158,7 @@ INSERT INTO analytics.positions (primary_fotmob_position, x, y) VALUES
 ('CB',  5, 3),
 ('RB',  8, 3),
 ('GK',  5, 1);
-
-DROP TABLE IF EXISTS analytics.position_overlap;
-CREATE TABLE analytics.position_overlap IF NOT EXISTS AS
+CREATE OR REPLACE VIEW analytics.positions_overlap AS
 WITH primary_positions AS (
     SELECT
         player_id,
