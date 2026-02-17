@@ -158,6 +158,7 @@ INSERT INTO analytics.positions (primary_fotmob_position, x, y) VALUES
 ('CB',  5, 3),
 ('RB',  8, 3),
 ('GK',  5, 1);
+
 CREATE OR REPLACE VIEW analytics.positions_overlap AS
 WITH primary_positions AS (
     SELECT
