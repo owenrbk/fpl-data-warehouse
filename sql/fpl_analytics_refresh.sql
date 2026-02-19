@@ -184,3 +184,5 @@ SELECT
     COUNT(*) AS match_appearances
 FROM appearance_data
 GROUP BY primary_position, played_position;
+
+COMMIT;
