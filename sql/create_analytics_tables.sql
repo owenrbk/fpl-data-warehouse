@@ -102,7 +102,7 @@ LEFT JOIN LATERAL (
 ) fm ON TRUE;
 
 DROP TABLE IF EXISTS analytics.gameweeks;
-CREATE TABLE analytics.gameweeks IF NOT EXISTS AS
+CREATE TABLE analytics.gameweeks AS
 SELECT
     g.gameweek_id AS Gameweek,
     g.average_score AS "Average Score",
@@ -164,7 +164,7 @@ INSERT INTO analytics.positions (primary_fotmob_position, x, y) VALUES
 ('GK',  5, 1);
 
 DROP TABLE IF EXISTS analytics.position_overlap;
-CREATE TABLE analytics.position_overlap IF NOT EXISTS AS
+CREATE TABLE analytics.position_overlap AS
 WITH primary_positions AS (
     SELECT
         player_id,
