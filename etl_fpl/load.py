@@ -144,6 +144,24 @@ def load_gameweeks(cur, gameweeks):
         """, gw)
 
 
+def load_chips(cur, gameweeks):
+    logging.info("Loading chips...")
+    cur.execute("TRUNCATE core.chips RESTART IDENTITY CASCADE;")
+
+    for gw in gameweeks:
+        gameweek_id = gw['id']
+        chip_plays = gw.get('chip_plays', [])
+        for chip in chip_plays:
+            cur.execute("""
+                INSERT INTO core.chips (gameweek_id, chip_name, num_played)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (gameweek_id, chip_name) DO UPDATE SET
+                    gameweek_id = EXCLUDED.gameweek_id,
+                    chip_name = EXCLUDED.chip_name,
+                    num_played = EXCLUDED.num_played;
+            """, (gameweek_id, chip['chip_name'], chip['num_played']))
+
+
 def load_all(data):
     try:
         conn = connect_db()
@@ -152,6 +170,7 @@ def load_all(data):
         load_players(cur, data["players"])
         load_teams(cur, data["teams"])
         load_gameweeks(cur, data["gameweeks"])
+        load_chips(cur, data["gameweeks"])
 
         conn.commit()
         logging.info("Load complete.")
