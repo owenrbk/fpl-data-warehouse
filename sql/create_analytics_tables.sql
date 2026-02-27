@@ -18,6 +18,7 @@ WITH fotmob_agg AS (
 )
 SELECT
     fa.fotmob_player_id                   AS player_id,
+	p.player_id                           AS fpl_player_id,
     CONCAT(p.first_name, ' ', p.last_name) AS full_name,
     t.team_name,
     n.nation,
