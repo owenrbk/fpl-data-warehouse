@@ -20,6 +20,7 @@ WITH fotmob_agg AS (
 INSERT INTO analytics.all_players
 SELECT
     fa.fotmob_player_id                   AS player_id,
+    p.player_id                           AS fpl_player_id,
     CONCAT(p.first_name, ' ', p.last_name) AS full_name,
     t.team_name,
     n.nation,
@@ -121,15 +122,15 @@ SELECT
     COALESCE(SUM(c.num_played) FILTER (WHERE c.chip_name='wildcard'),0) AS "Num of Wildcard"
 FROM core.gameweeks g
 LEFT JOIN analytics.all_players p_most_selected
-    ON g.most_selected = p_most_selected.player_id
+    ON g.most_selected = p_most_selected.fpl_player_id
 LEFT JOIN analytics.all_players p_most_transferred_in
-    ON g.most_transferred_in = p_most_transferred_in.player_id
+    ON g.most_transferred_in = p_most_transferred_in.fpl_player_id
 LEFT JOIN analytics.all_players p_most_captained
-    ON g.most_captained = p_most_captained.player_id
+    ON g.most_captained = p_most_captained.fpl_player_id
 LEFT JOIN analytics.all_players p_most_vice_captained
-    ON g.most_vice_captained = p_most_vice_captained.player_id
+    ON g.most_vice_captained = p_most_vice_captained.fpl_player_id
 LEFT JOIN analytics.all_players p_top_player
-    ON g.top_player = p_top_player.player_id
+    ON g.top_player = p_top_player.fpl_player_id
 LEFT JOIN core.chips c
     ON g.gameweek_id = c.gameweek_id
 GROUP BY
@@ -184,5 +185,3 @@ SELECT
     COUNT(*) AS match_appearances
 FROM appearance_data
 GROUP BY primary_position, played_position;
-
-COMMIT;
